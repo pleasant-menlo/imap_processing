@@ -2,7 +2,7 @@
 
 import numpy as np
 
-N_ESA_STEPS = 24
+N_ESA_STEPS = 20
 N_ANGLE_SECTORS = 30
 N_CEMS = 7
 N_QUARTER_CYCLES = 4

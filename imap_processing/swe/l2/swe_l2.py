@@ -84,29 +84,18 @@ def calculate_phase_space_density(l1b_dataset: xr.Dataset) -> xr.Dataset:
         Phase space density. We need to call this phase space density because
         there will be density in L3 processing.
     """
-    # Get esa_table_num for each full sweep.
-    esa_table_nums = l1b_dataset["esa_table_num"].values[:, 0]
-    # Get energy values from lookup table.
-    particle_energy = get_particle_energy()
-    # Get 720 (24 energy steps x 30 angle) particle energy for each full
-    # sweep data.
-    particle_energy_data = np.array(
-        [
-            particle_energy[particle_energy["table_index"] == val]["energy"].tolist()
-            for val in esa_table_nums
-        ]
-    )
-    particle_energy_data = particle_energy_data.reshape(
-        -1, swe_constants.N_ESA_STEPS, swe_constants.N_ANGLE_SECTORS
-    )
-
+    energy = np.array([2.55714286, 3.65142857, 5.16, 7.30571429,
+                        10.32857143, 14.34285714, 19.95714286, 27.42857143,
+                        38.37142857, 52.82857143, 73.32857143, 102.0,
+                        142.14285714, 196.57142857, 272., 372.71428571,
+                        519.0, 712.57142857, 987.14285714, 1370.0])[np.newaxis, :, np.newaxis, np.newaxis]
     # Calculate phase space density using formula:
     #   2 * (C/tau) / (G * 1.237e31 * eV^2)
     # See doc string for more details.
     density = (2 * l1b_dataset["science_data"]) / (
         swe_constants.GEOMETRIC_FACTORS[np.newaxis, np.newaxis, np.newaxis, :]
         * swe_constants.VELOCITY_CONVERSION_FACTOR
-        * particle_energy_data[:, :, :, np.newaxis] ** 2
+        * energy ** 2
     )
 
     # Return density as xr.dataset with phase space density and
@@ -116,10 +105,6 @@ def calculate_phase_space_density(l1b_dataset: xr.Dataset) -> xr.Dataset:
             "phase_space_density": (
                 ["epoch", "esa_step", "spin_sector", "cem_id"],
                 density.data,
-            ),
-            "energy_in_eV": (
-                ["epoch", "esa_step", "spin_sector"],
-                particle_energy_data,
             ),
         },
         coords=l1b_dataset.coords,
@@ -174,9 +159,14 @@ def calculate_flux(l1b_dataset: xr.Dataset) -> npt.NDArray:
         Flux values.
     """
     phase_space_density_ds = calculate_phase_space_density(l1b_dataset)
+    particle_energy_data = np.array([2.55714286, 3.65142857, 5.16, 7.30571429,
+                                     10.32857143, 14.34285714, 19.95714286, 27.42857143,
+                                     38.37142857, 52.82857143, 73.32857143, 102.0,
+                                     142.14285714, 196.57142857, 272., 372.71428571,
+                                     519.0, 712.57142857, 987.14285714, 1370.0])
     flux = (
         swe_constants.FLUX_CONVERSION_FACTOR
-        * phase_space_density_ds["energy_in_eV"].data[:, :, :, np.newaxis]
+        * particle_energy_data[np.newaxis, :, np.newaxis, np.newaxis]
         * phase_space_density_ds["phase_space_density"].data
     )
     return flux
@@ -326,15 +316,22 @@ def swe_l2(l1b_dataset: xr.Dataset, data_version: str) -> xr.Dataset:
 
     # Energy values in eV.
     energy_xr = xr.DataArray(
-        np.array(list(swe_constants.ESA_VOLTAGE_ROW_INDEX_DICT.keys()))
-        * swe_constants.ENERGY_CONVERSION_FACTOR,
+        np.array([2.55714286, 3.65142857, 5.16, 7.30571429,
+                  10.32857143, 14.34285714, 19.95714286, 27.42857143,
+                  38.37142857, 52.82857143, 73.32857143, 102.0,
+                  142.14285714, 196.57142857, 272., 372.71428571,
+                  519.0, 712.57142857, 987.14285714, 1370.0]),
         name="energy",
         dims=["energy"],
         attrs=cdf_attributes.get_variable_attributes("energy", check_schema=False),
     )
 
     energy_label = xr.DataArray(
-        np.array(list(swe_constants.ESA_VOLTAGE_ROW_INDEX_DICT.keys())).astype(str),
+        np.array([2.55714286, 3.65142857, 5.16, 7.30571429,
+                  10.32857143, 14.34285714, 19.95714286, 27.42857143,
+                  38.37142857, 52.82857143, 73.32857143, 102.0,
+                  142.14285714, 196.57142857, 272., 372.71428571,
+                  519.0, 712.57142857, 987.14285714, 1370.0]).astype(str),
         name="energy_label",
         dims=["energy"],
         attrs=cdf_attributes.get_variable_attributes(
