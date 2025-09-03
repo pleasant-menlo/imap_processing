@@ -335,15 +335,60 @@ def swe_l2(l1b_dataset: xr.Dataset) -> xr.Dataset:
 
     # Energy values in eV.
     energy_xr = xr.DataArray(
-        np.array(list(swe_constants.ESA_VOLTAGE_ROW_INDEX_DICT.keys()))
-        * swe_constants.ENERGY_CONVERSION_FACTOR,
+        np.array(
+            [
+                2.55714286,
+                3.65142857,
+                5.16,
+                7.30571429,
+                10.32857143,
+                14.34285714,
+                19.95714286,
+                27.42857143,
+                38.37142857,
+                52.82857143,
+                73.32857143,
+                102.0,
+                142.14285714,
+                196.57142857,
+                272.0,
+                372.71428571,
+                519.0,
+                712.57142857,
+                987.14285714,
+                1370.0,
+            ]
+        ),
         name="energy",
         dims=["energy"],
         attrs=cdf_attributes.get_variable_attributes("energy", check_schema=False),
     )
 
     energy_label = xr.DataArray(
-        np.array(list(swe_constants.ESA_VOLTAGE_ROW_INDEX_DICT.keys())).astype(str),
+        np.array(
+            [
+                2.55714286,
+                3.65142857,
+                5.16,
+                7.30571429,
+                10.32857143,
+                14.34285714,
+                19.95714286,
+                27.42857143,
+                38.37142857,
+                52.82857143,
+                73.32857143,
+                102.0,
+                142.14285714,
+                196.57142857,
+                272.0,
+                372.71428571,
+                519.0,
+                712.57142857,
+                987.14285714,
+                1370.0,
+            ]
+        ).astype(str),
         name="energy_label",
         dims=["energy"],
         attrs=cdf_attributes.get_variable_attributes(
