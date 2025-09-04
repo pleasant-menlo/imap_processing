@@ -14,7 +14,7 @@ MICROSECONDS_IN_SECOND = 1e6
 # TODO: add these to instrument status summary
 ENERGY_CONVERSION_FACTOR = 4.75
 # 7 CEMs geometric factors in cm^2 sr eV/eV units.
-GEOMETRIC_FACTORS = np.array(
+SWE_GEOMETRIC_FACTORS = np.array(
     [
         435e-6,
         599e-6,
@@ -26,6 +26,19 @@ GEOMETRIC_FACTORS = np.array(
     ]
 )
 
+ACE_GEOMETRIC_FACTORS = np.array(
+    [
+        272.9e-6,
+        540.3e-6,
+        733.5e-6,
+        659.5e-6,
+        633.4e-6,
+        511.0e-6,
+        255.6e-6,
+    ]
+)
+GEOMETRIC_FACTORS = ACE_GEOMETRIC_FACTORS
+
 ELECTRON_MASS = 9.10938356e-31  # kg
 
 # See doc string of calculate_phase_space_density() for more details.
@@ -33,7 +46,10 @@ VELOCITY_CONVERSION_FACTOR = 1.237e31
 # See doc string of calculate_flux() for more details.
 FLUX_CONVERSION_FACTOR = 6.187e30
 
-CEM_DETECTORS_ANGLE = np.array([-63, -42, -21, 0, 21, 42, 63])
+SWE_DETECTORS_ANGLE = np.array([-63, -42, -21, 0, 21, 42, 63])
+ACE_DETECTORS_ANGLES = np.array([-64.1, -43.4, -21.8, 0, 21.9, 44, 64.6])
+
+CEM_DETECTORS_ANGLE = ACE_DETECTORS_ANGLES
 
 # ESA voltage and index in the final data table
 ESA_VOLTAGE_ROW_INDEX_DICT = {
