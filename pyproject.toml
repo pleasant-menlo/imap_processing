@@ -2,6 +2,11 @@
 requires = ["poetry-core>=1.0.0,<2.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
 build-backend = "poetry_dynamic_versioning.backend"
 
+[project]
+name = "imap-processing"
+version = "0.0.0"
+dependencies = []
+
 [tool.poetry]
 name = "imap-processing"
 # Gets updated dynamically by the poetry-dynamic-versioning plugin
